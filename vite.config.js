@@ -3,11 +3,12 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
+  base: "/Discipline_frontend",
   server: {
     port: 5173,
     proxy: {
       "/api": {
-        target: "http://localhost:5001",
+        target: "https://displine-backend.onrender.com",
         changeOrigin: true,
       },
     },
