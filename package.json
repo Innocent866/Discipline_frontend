@@ -21,10 +21,9 @@
     "@vitejs/plugin-react": "^4.3.4",
     "eslint": "^9.11.1",
     "eslint-plugin-react": "^7.37.2",
-    "vite": "^5.4.10"
+    "vite": "^7.3.0"
   },
   "engines": {
-  "node": "24.x"
+    "node": "24.x"
+  }
 }
-}
-
