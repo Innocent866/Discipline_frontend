@@ -1,5 +1,4 @@
-const API_BASE =
-  import.meta.env.VITE_API_BASE || "https://displine-backend.onrender.com";
+const API_BASE ="https://displine-backend.onrender.com";
 
 export const apiFetch = async (
   path,
