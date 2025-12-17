@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "node -v && npm -v && vite build",
+    "build": "npm exec vite build",
     "preview": "vite preview"
   },
   "dependencies": {
