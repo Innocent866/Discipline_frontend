@@ -38,6 +38,52 @@ const StudentProfilePage = () => {
     if (id) fetchData();
   }, [id, token]);
 
+
+  const handleApprove = async (caseId) => {
+    if (!window.confirm("Approve this case?")) return;
+    try {
+      await apiFetch(`/api/cases/${caseId}/approve`, { token, method: "PUT" });
+      setCases(prev => prev.map(c => c._id === caseId ? { ...c, status: "approved" } : c));
+    } catch (err) {
+      alert("Failed to approve case");
+    }
+  };
+
+  const handleResolve = async (caseId) => {
+    const notes = window.prompt("Enter resolution notes (optional):");
+    if (notes === null) return;
+    try {
+      await apiFetch(`/api/cases/${caseId}/resolve`, { 
+        token, 
+        method: "POST", 
+        body: { resolutionNotes: notes }
+      });
+      setCases(prev => prev.map(c => c._id === caseId ? { ...c, status: "resolved", isResolved: true } : c));
+    } catch (err) {
+      alert("Failed to resolve case");
+    }
+  };
+
+  const handleUnapprove = async (caseId) => {
+    if (!window.confirm("Unapprove this case (revert to default pending)?")) return;
+    try {
+       await apiFetch(`/api/cases/${caseId}/unapprove`, { token, method: "PUT" });
+       setCases(prev => prev.map(c => c._id === caseId ? { ...c, status: "pending" } : c));
+    } catch (err) {
+        alert("Failed to unapprove case");
+    }
+  };
+
+  const handleUnresolve = async (caseId) => {
+    if (!window.confirm("Unresolve this case (revert to approved)?")) return;
+    try {
+       await apiFetch(`/api/cases/${caseId}/unresolve`, { token, method: "PUT" });
+       setCases(prev => prev.map(c => c._id === caseId ? { ...c, status: "approved", isResolved: false, resolutionNotes: undefined } : c));
+    } catch (err) {
+        alert("Failed to unresolve case");
+    }
+  };
+
   // Calculate Stats
   const totalPoints = useMemo(() => {
     return cases.reduce((acc, c) => acc + (c.offenseType?.pointValue || 0), 0);
@@ -104,9 +150,11 @@ const StudentProfilePage = () => {
               <tr>
                 <th>Date</th>
                 <th>Offense</th>
+                <th>Punishment</th>
                 <th>Points</th>
                 <th>Status</th>
                 <th>Details</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -120,6 +168,13 @@ const StudentProfilePage = () => {
                     )}
                   </td>
                   <td>
+                    {c.suggestedPunishment ? (
+                         <span style={{color: "#e11d48", fontWeight: 500}}>
+                             {c.suggestedPunishment.name}
+                         </span>
+                    ) : <span style={{color: "#94a3b8"}}>-</span>}
+                  </td>
+                  <td>
                     <span style={{fontWeight: 600, color: "#ef4444"}}>
                         +{c.offenseType?.pointValue || 0}
                     </span>
@@ -131,6 +186,45 @@ const StudentProfilePage = () => {
                   </td>
                   <td style={{color: "#64748b", fontSize: 13}}>
                       {c.description ? `"${c.description}"` : "-"}
+                  </td>
+                  <td>
+                    {!c.isResolved && (
+                        <div style={{display: "flex", gap: 8, fontSize: 12}}>
+                            {c.status === "pending" && (
+                                <button
+                                    onClick={() => handleApprove(c._id)}
+                                    className="btn-secondary"
+                                    style={{padding: "4px 8px"}}
+                                >
+                                    Approve
+                                </button>
+                            )}
+                            {c.status === "approved" && (
+                                <span
+                                    onClick={() => handleResolve(c._id)}
+                                    style={{cursor: "pointer", color: "#16a34a", fontWeight: 600, textDecoration: "underline"}}
+                                >
+                                    Resolve
+                                </span>
+                            )}
+                            {c.status === "approved" && (
+                                 <span
+                                    onClick={() => handleUnapprove(c._id)}
+                                    style={{cursor: "pointer", color: "#64748b", fontWeight: 500, fontSize: 11, textDecoration: "underline"}}
+                                >
+                                    Unapprove
+                                </span>
+                            )}
+                        </div>
+                    )}
+                    {c.isResolved && (
+                         <span
+                            onClick={() => handleUnresolve(c._id)}
+                            style={{cursor: "pointer", color: "#64748b", fontWeight: 500, fontSize: 11, textDecoration: "underline"}}
+                        >
+                            Unresolve
+                        </span>
+                    )}
                   </td>
                 </tr>
               ))}

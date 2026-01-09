@@ -24,8 +24,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token, user]);
 
-  const API_BASE =
-    import.meta.env.VITE_API_BASE || "https://displine-backend.onrender.com";
+  const API_BASE = "https://displine-backend.onrender.com";
 
   const login = async ({ email, password }) => {
     setLoading(true);

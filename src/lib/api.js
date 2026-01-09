@@ -1,5 +1,5 @@
 // USING LOCALHOST:5000 TO ENABLE LOCAL BACKEND CHANGES (Student Status: Day/Boarder)
-const API_BASE = "http://localhost:5000";
+const API_BASE = "https://displine-backend.onrender.com";
 
 export const apiFetch = async (
   path,
