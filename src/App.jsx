@@ -12,6 +12,7 @@ import PunishmentsPage from "./pages/PunishmentsPage.jsx";
 import MembersPage from "./pages/MembersPage.jsx";
 import AuditLogsPage from "./pages/AuditLogsPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
+import StudentProfilePage from "./pages/StudentProfilePage.jsx";
 
 const AppShell = ({ children }) => {
   const { user } = useAuth();
@@ -46,6 +47,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <StudentsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/students/:id"
+          element={
+            <ProtectedRoute>
+              <StudentProfilePage />
             </ProtectedRoute>
           }
         />
